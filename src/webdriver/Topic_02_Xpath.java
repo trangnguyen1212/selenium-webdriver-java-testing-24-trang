@@ -73,8 +73,9 @@ public class Topic_02_Xpath {
 	// Testcase 4
 	@Test
 	public void TC_04_InvalidPassword() {
+		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
 		// Login valid fields
-		driver.findElement(By.id("txtEmail")).clear();
+		//driver.findElement(By.id("txtEmail")).clear();
 		driver.findElement(By.id("txtEmail")).sendKeys("trangntt121293@gmail.com");
 		driver.findElement(By.id("txtCEmail")).clear();
 		driver.findElement(By.id("txtCEmail")).sendKeys("trangntt121293@gmail.com");
@@ -94,8 +95,9 @@ public class Topic_02_Xpath {
 	// Testcase 5
 	@Test
 	public void TC_05_InvalidConfirmPassword() {
+		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
 		// Login valid fields
-		driver.findElement(By.id("txtPassword")).clear();
+		//driver.findElement(By.id("txtPassword")).clear();
 		driver.findElement(By.id("txtPassword")).sendKeys("12345Trang@");
 		driver.findElement(By.id("txtCPassword")).clear();
 		driver.findElement(By.id("txtCPassword")).sendKeys("12345");
@@ -110,8 +112,9 @@ public class Topic_02_Xpath {
 	// Testcase 6
 	@Test
 	public void TC_06_InvalidTelephone() {
+		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
 		// Login valid fields
-		driver.findElement(By.id("txtCPassword")).clear();
+		//driver.findElement(By.id("txtCPassword")).clear();
 		driver.findElement(By.id("txtCPassword")).sendKeys("12345Trang@");
 		driver.findElement(By.id("txtPhone")).clear();
 		driver.findElement(By.id("txtPhone")).sendKeys("09327");

@@ -1,5 +1,6 @@
 package webdriver;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -13,6 +14,8 @@ import org.testng.annotations.Test;
 
 public class Topic_02_Xpath_2 {
 	WebDriver driver;
+	private int randomInt;
+	private String emailAddess;
 	String projectPath = System.getProperty("user.dir");
 
 	// Chỉ dẫn cho hàm
@@ -29,12 +32,9 @@ public class Topic_02_Xpath_2 {
 	@Test
 	public void TC_01_emptyEmailPassword() {
 		// click button
-		WebElement accountLink = driver.findElement(By.xpath("//span[@class='label' and text()='Account']"));
-		accountLink.click();
-		WebElement myAccountLink = driver.findElement(By.xpath("//*[@id='header']//*[text()='My Account']"));
-		myAccountLink.click();
-		WebElement loginButton = driver.findElement(By.xpath("//span[text()='Login']"));
-		loginButton.click();
+		driver.findElement(By.xpath("//span[@class='label' and text()='Account']")).click();
+		driver.findElement(By.xpath("//*[@id='header']//*[text()='My Account']")).click();
+		driver.findElement(By.xpath("//span[text()='Login']")).click();
 		// Check empty email
 		Assert.assertTrue(driver.findElement(By.id("advice-required-entry-email")).isDisplayed());
 		// Check empty password
@@ -91,6 +91,51 @@ public class Topic_02_Xpath_2 {
 	}
 
 	// Testcase 5
+	@Test
+	public void TC_05_CreateAccount() {
+		// click button
+		driver.findElement(By.xpath("//*[text()='Create an Account']")).click();
+		// Input data
+		driver.findElement(By.id("firstname")).sendKeys("trang");
+		driver.findElement(By.id("middlename")).sendKeys("thi");
+		driver.findElement(By.id("lastname")).sendKeys("nguyen");
+		// create random email
+		Random rd = new Random();
+		for (int idx = 1000; idx <= 100000; ++idx) {
+			emailAddess = "evildemon" + rd.nextInt(100000) + "@gmail.com"; 
+		}
+		
+		driver.findElement(By.id("email_address")).clear();
+		// create email
+		driver.findElement(By.id("email_address")).sendKeys(emailAddess);
+		driver.findElement(By.id("password")).sendKeys("trang@123456");
+		driver.findElement(By.id("confirmation")).sendKeys("trang@123456");
+		// click button
+		driver.findElement(By.xpath("//*[@class = 'button' and @title='Register']")).click();
+		// Check message
+		Assert.assertTrue(
+				driver.findElement(By.xpath("//*[text()='Thank you for registering with Main Website Store.']"))
+						.isDisplayed());
+		sleepSecond(3);
+	}
+
+	// Test case 6
+	@Test
+	public void TC_06_Login() {
+		// click button
+		driver.findElement(By.xpath("//span[@class='label' and text()='Account']")).click();
+		driver.findElement(By.xpath("//*[@title='Log Out']")).click();
+		driver.findElement(By.xpath("//span[@class='label' and text()='Account']")).click();
+		driver.findElement(By.xpath("//*[@id='header']//*[text()='My Account']")).click();
+		// Login valid fields
+		driver.findElement(By.id("email")).sendKeys(emailAddess);
+		driver.findElement(By.id("pass")).sendKeys("trang@123456");
+		// click button
+		driver.findElement(By.xpath("//span[text()='Login']")).click();
+		// Check message
+		Assert.assertTrue(driver.findElement(By.xpath("//*[text() = 'My Dashboard']")).isDisplayed());
+		sleepSecond(3);
+	}
 
 	// sleepSecond
 	public void sleepSecond(long second) {
