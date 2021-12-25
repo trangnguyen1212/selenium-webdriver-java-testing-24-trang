@@ -38,7 +38,7 @@ public class Topic06_TestBrowser {
 		driver.findElement(myAccountLink).click();
 		Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/customer/account/login/");
 		// Register page
-		driver.findElement(By.xpath("//*[text()='Create an Account']")).click();
+		driver.findElement(createAccountLink).click();
 		Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/customer/account/create/");
 	}
 
