@@ -14,6 +14,8 @@ import org.testng.annotations.Test;
 public class Topic06_TestBrowser {
 	WebDriver driver;
 	String projectPath = System.getProperty("user.dir");
+	By myAccountLink = By.xpath("//div[@class='footer']//child::div[4]//ul//*[text() = 'My Account']");
+	By createAccountLink = By.xpath("//*[text()='Create an Account']");
 
 	// Chỉ dẫn cho hàm
 	@BeforeClass
@@ -24,7 +26,7 @@ public class Topic06_TestBrowser {
 		driver.manage().window().maximize();
 		driver.get("http://live.techpanda.org/");
 	}
-
+ 
 	@Test
 	public void TC_01_ValidateCurrentUrl() {
 		Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/");
@@ -33,7 +35,7 @@ public class Topic06_TestBrowser {
 	@Test
 	public void TC_01_ValidatePageUrl() {
 		// Login Page
-		driver.findElement(By.xpath("//div[@class='footer']//child::div[4]//ul//*[text() = 'My Account']")).click();
+		driver.findElement(myAccountLink).click();
 		Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/customer/account/login/");
 		// Register page
 		driver.findElement(By.xpath("//*[text()='Create an Account']")).click();
@@ -43,10 +45,10 @@ public class Topic06_TestBrowser {
 	@Test
 	public void TC_02_ValidateTitle() {
 		// Title Customer Login
-		driver.findElement(By.xpath("//div[@class='footer']//child::div[4]//ul//*[text() = 'My Account']")).click();
+		driver.findElement(myAccountLink).click();
 		Assert.assertEquals(driver.getTitle(), "Customer Login");
 		// Title Create New Customer
-		driver.findElement(By.xpath("//*[text()='Create an Account']")).click();
+		driver.findElement(createAccountLink).click();
 		;
 		Assert.assertEquals(driver.getTitle(), "Create New Customer Account");
 
@@ -55,8 +57,8 @@ public class Topic06_TestBrowser {
 	@Test
 	public void TC_03_Navigate() {
 		// Verify Register Page
-		driver.findElement(By.xpath("//div[@class='footer']//child::div[4]//ul//*[text() = 'My Account']")).click();
-		driver.findElement(By.xpath("//*[text()='Create an Account']")).click();
+		driver.findElement(myAccountLink).click();
+		driver.findElement(createAccountLink).click();
 		Assert.assertEquals(driver.getCurrentUrl(), "http://live.techpanda.org/index.php/customer/account/create/");
 		// Navigate - back to Login Page
 		driver.navigate().back();
@@ -70,10 +72,10 @@ public class Topic06_TestBrowser {
 	@Test
 	public void TC_04_PageSource() {
 		// Verify text Login Page
-		driver.findElement(By.xpath("//div[@class='footer']//child::div[4]//ul//*[text() = 'My Account']")).click();
+		driver.findElement(myAccountLink).click();
 		Assert.assertTrue(driver.getPageSource().contains("Login or Create an Account"));
 		// Verify text Register Page
-		driver.findElement(By.xpath("//*[text()='Create an Account']")).click();
+		driver.findElement(createAccountLink).click();
 		Assert.assertTrue(driver.getPageSource().contains("Create an Account"));
 
 	}
