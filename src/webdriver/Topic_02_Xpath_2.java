@@ -14,14 +14,13 @@ import org.testng.annotations.Test;
 
 public class Topic_02_Xpath_2 {
 	WebDriver driver;
-	private int randomInt;
-	private String emailAddess;
+	private String firstname, lastname, middlename, emailAddess, passwword, nonExistedEmail;
 	String projectPath = System.getProperty("user.dir");
 	// Khai bao locator, element
 	// login form
 	By emailTextbox = By.id("email");
 	By passTextbox = By.id("pass");
-	//RegisterForm
+	// RegisterForm
 	By emailAddressCreate = By.id("email_address");
 	By passCreate = By.id("password");
 	By confirmpassTextBox = By.id("confirmation");
@@ -93,63 +92,95 @@ public class Topic_02_Xpath_2 {
 
 	// Testcase 4
 	@Test
-	public void TC_04_IncorrectEmailPass() {
-		// Clear data
-		driver.findElement(passTextbox).clear();
-		// Login invalid pass
-		driver.findElement(passTextbox).sendKeys("123123123");
-		// click button
-		driver.findElement(loginButton).click();
-		// Check message
-		Assert.assertTrue(driver.findElement(By.xpath("//*[text()='Invalid login or password.']")).isDisplayed());
-		sleepSecond(3);
-	}
-
-	// Testcase 5
-	@Test
-	public void TC_05_CreateAccount() {
+	public void TC_04_CreateAccount() {
 		// click button
 		driver.findElement(createAccountLink).click();
-		// Input data
-		driver.findElement(firstnameTextBox).sendKeys("trang");
-		driver.findElement(middlenameTextBox).sendKeys("thi");
-		driver.findElement(lastnameTextBox).sendKeys("nguyen");
+		firstname = "trang";
+		middlename = "thi";
+		lastname = "nguyen";
 		// create random email
-		Random rd = new Random();
-		for (int idx = 1000; idx <= 100000; ++idx) {
-			emailAddess = "evildemon" + rd.nextInt(100000) + "@gmail.com";
-		}
+		emailAddess = "evildemon" + getRandomNumber() + "@gmail.com";
+		nonExistedEmail = "evildemon" + getRandomNumber() + "@hotmail.net";
+		passwword = "trang@123456";
+			// Input data
+		driver.findElement(firstnameTextBox).sendKeys(firstname);
+		driver.findElement(middlenameTextBox).sendKeys(middlename);
+		driver.findElement(lastnameTextBox).sendKeys(lastname);
 
 		driver.findElement(emailAddressCreate).clear();
 		// create email
 		driver.findElement(emailAddressCreate).sendKeys(emailAddess);
-		driver.findElement(passCreate).sendKeys("trang@123456");
-		driver.findElement(confirmpassTextBox).sendKeys("trang@123456");
+		driver.findElement(passCreate).sendKeys(passwword);
+		driver.findElement(confirmpassTextBox).sendKeys(passwword);
 		// click button
 		driver.findElement(registerButton).click();
+		// verify message
+		Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(),
+				"Thank you for registering with Main Website Store.");
+		Assert.assertEquals(driver.findElement(By.cssSelector("div.welcome-msg strong")).getText(),
+				"Hello, " + firstname + " " + middlename + " " + lastname + "!");
+		String contactInformation = driver
+				.findElement(By.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div/p"))
+				.getText();
+		Assert.assertTrue(contactInformation.contains(firstname + " " + middlename + " " + lastname));
+		Assert.assertTrue(contactInformation.contains(emailAddess));
+
+		// click button LogOut
+		driver.findElement(accountLink).click();
+		driver.findElement(By.xpath("//*[@title='Log Out']")).click();
+		Assert.assertTrue(driver.findElement(By.cssSelector("div.page-title img[src$='logo.png']")).isDisplayed());
+		sleepSecond(2);
+
+	}
+
+	// Testcase 5
+	@Test
+	public void TC_05_IncorrectEmailPass() {
+		driver.findElement(accountLink).click();
+		driver.findElement(By.xpath("//*[@title='Log In']")).click();
+		// Existed email + Incorrect Password -> unsuccessfull
+		driver.findElement(emailTextbox).sendKeys(emailAddess);
+		driver.findElement(passTextbox).sendKeys("123456");
+		driver.findElement(loginButton).click();
+		Assert.assertEquals(driver.findElement(By.cssSelector("li.error-msg span")).getText(),
+				"Invalid login or password.");
+		// Clear data
+		driver.findElement(emailTextbox).clear();
+		driver.findElement(passTextbox).clear();
+		// Non existed email + correct passwword -> unsuccessfull
+		driver.findElement(emailTextbox).sendKeys(nonExistedEmail);
+		driver.findElement(passTextbox).sendKeys(passwword);
+		driver.findElement(loginButton).click();
 		// Check message
-		Assert.assertTrue(
-				driver.findElement(By.xpath("//*[text()='Thank you for registering with Main Website Store.']"))
-						.isDisplayed());
-		sleepSecond(3);
+		Assert.assertEquals(driver.findElement(By.cssSelector("li.error-msg span")).getText(),
+				"Invalid login or password.");
+		sleepSecond(2);
 	}
 
 	// Test case 6
 	@Test
-	public void TC_06_Login() {
-		// click button
-		driver.findElement(accountLink).click();
-		driver.findElement(By.xpath("//*[@title='Log Out']")).click();
-		driver.findElement(accountLink).click();
-		driver.findElement(myAccountLink).click();
+	public void TC_06_Login_ValidEmailandPass() {
+		driver.findElement(emailTextbox).clear();
+		driver.findElement(passTextbox).clear();
 		// Login valid fields
 		driver.findElement(emailTextbox).sendKeys(emailAddess);
-		driver.findElement(passTextbox).sendKeys("trang@123456");
+		driver.findElement(passTextbox).sendKeys(passwword);
 		// click button
 		driver.findElement(loginButton).click();
-		// Check message
-		Assert.assertTrue(driver.findElement(By.xpath("//*[text() = 'My Dashboard']")).isDisplayed());
-		sleepSecond(3);
+		// Verify display after login success
+		Assert.assertEquals(driver.findElement(By.cssSelector("div.page-title>h1")).getText(), "MY DASHBOARD");
+		Assert.assertEquals(driver.findElement(By.cssSelector("div.welcome-msg strong")).getText(),
+				"Hello, " + firstname + " " + middlename + " " + lastname + "!");
+		String contactInformation = driver
+				.findElement(By.xpath("//h3[text()='Contact Information']/parent::div/following-sibling::div/p"))
+				.getText();
+		Assert.assertTrue(contactInformation.contains(firstname + " " + middlename + " " + lastname));
+		Assert.assertTrue(contactInformation.contains(emailAddess));
+	}
+
+	public int getRandomNumber() {
+		Random rd = new Random();
+		return rd.nextInt(100000);
 	}
 
 	// sleepSecond
