@@ -50,7 +50,7 @@ public class Topic_06_TextBox_TextArea {
 
 		actions.moveToElement(driver.findElement(By.cssSelector("a#menu_pim_viewPimModule")))
 				.click(driver.findElement(By.cssSelector("a[id='menu_pim_addEmployee']"))).build().perform();
-		sleepSecond(5);
+		sleepSecond(3);
 		// At Add Employee page: 'Add Employee' sub-menu link is displayed
 		Assert.assertTrue(driver.findElement(By.cssSelector("a#menu_pim_addEmployee")).isDisplayed());
 
